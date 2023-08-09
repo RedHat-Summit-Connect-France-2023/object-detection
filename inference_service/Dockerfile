@@ -8,7 +8,10 @@ USER 0
 # Update base image for latest security updates
 # (ubi images are not released that often)
 RUN dnf -y  --setopt=tsflags=nodocs update && \
-    dnf -y clean all --enablerepo='*'
+    dnf -y clean all --enablerepo='*' && \
+    mkdir -pv log/vars log/images && \
+    chown -R 1001:1001 log && \
+    chmod -R 755 log
 
 USER 1001
 
@@ -18,8 +21,12 @@ RUN pip install -U "micropipenv[toml]"
 WORKDIR /opt/app-root/src
 
 # Copy files
-COPY Pipfile.lock api.py classes.yaml grpc_predict_v2_pb2_grpc.py \
+COPY Pipfile.lock api.py grpc_predict_v2_pb2_grpc.py \
     grpc_predict_v2_pb2.py remote_infer_grpc.py ./
+
+COPY config config
+
+COPY feature_extractor feature_extractor
 
 # Install packages and cleanup
 # (all commands are chained to minimize layer size)
