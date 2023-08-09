@@ -11,7 +11,7 @@ import grpc_predict_v2_pb2
 import yaml
 import time
 
-from transformers import YolosFeatureExtractor
+from transformers import YolosImageProcessor
 import transformers
 import json
 import pickle
@@ -44,7 +44,7 @@ class ort_v5:
         original_img_size = img_data.shape
         image, ratio, dwdh = self.letterbox(img_data) # Resize and pad image
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        feature_extractor = YolosFeatureExtractor.from_pretrained(FEATURE_EXTRACTOR_DIR)
+        feature_extractor = YolosImageProcessor.from_pretrained(FEATURE_EXTRACTOR_DIR)
         inputs = feature_extractor(images=image, return_tensors="pt")
         flatten_inputs = inputs.data["pixel_values"].numpy().flatten().tolist()
 

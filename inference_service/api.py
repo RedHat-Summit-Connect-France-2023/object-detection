@@ -14,12 +14,11 @@ import uuid
 
 DEBUG = os.getenv('DEBUG', 1)
 IOU_THRESHOLD = float(os.getenv('IOU_THRESHOLD', 0.65))
+CONF_THRESHOLD = float(os.getenv('CONF_THRESHOLD', 0.15))
 
-CONF_THRESHOLD = float(os.getenv('CONF_THRESHOLD', 0.2))
 GRPC_HOST = os.getenv('GRPC_HOST', 'modelmesh-serving.object-detection')
 GRPC_PORT = os.getenv('GRPC_PORT', '8033')
 MODEL_NAME = os.getenv('MODEL_NAME', 'object-detection')
-COUPON_VALUE = ast.literal_eval(os.getenv('COUPON_VALUE', '[5,10,15]'))
 
 class Box(BaseModel):
     xMax: float
@@ -29,7 +28,6 @@ class Box(BaseModel):
 
 class Detection(BaseModel):
     box: Box
-    cValue: float
     class_: str
     label: str
     score: float
@@ -68,8 +66,8 @@ async def predictions(file: UploadFile = File(...)):
     result = Detections(detections=[])
     for output in raw_detections:
         box = Box(xMin=output["xMin"], xMax=output["xMax"], yMin=output["yMin"], yMax=output["yMax"])
-        detection = Detection(box=box,cValue=5, class_=output["class"],
-            label=output["label"], score=output["score"])
+        detection = Detection(box=box, class_=output["class"],
+            label=output["class"].capitalize(), score=output["score"]) # Label is the value displayed to user
         result.detections.append(detection)
     if DEBUG:
         log_inference(request_uuid, img_data, raw_detections)
