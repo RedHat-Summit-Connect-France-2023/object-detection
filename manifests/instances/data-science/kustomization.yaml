@@ -1,0 +1,6 @@
+namespace: object-detection
+resources:
+  - namespace.yaml
+  - s3-creds.yaml
+  - ds-pipeline-instance.yaml
+  - minio-route.yaml

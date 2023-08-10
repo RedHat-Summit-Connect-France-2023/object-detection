@@ -1,0 +1,3 @@
+resources:
+  - openshift-pipelines.yaml
+  - openshift-data-science.yaml

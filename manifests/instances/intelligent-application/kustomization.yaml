@@ -1,0 +1,4 @@
+namespace: object-detection-app
+resources:
+  - namespace.yaml
+  - app.yaml
