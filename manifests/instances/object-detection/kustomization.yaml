@@ -1,0 +1,3 @@
+resources:
+  - ./data-science-project
+  - ./inference-service

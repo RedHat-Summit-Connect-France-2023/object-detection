@@ -1,0 +1,96 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: push-model-scripts
+data:
+  wait-minio.sh: |
+    #!/usr/bin/env sh
+    wait_for_exists () {
+        # Arg1: selector
+        # Arg2: namespace
+        while true; do
+            pod_exists=$(oc -n $2 get po -oname -l $1 | wc -l)
+            if [ $pod_exists -gt 0 ]; then
+                echo "Selector $1 found in namespace $2"
+                break
+            fi
+            echo "Wait for selector $1 in namspace $2"
+            sleep 5
+        done;
+        oc -n $2 wait --for=condition=Ready=true po -l $1 --timeout=10m
+    }
+    wait_for_exists "app=minio-pipelines-definition,component=data-science-pipelines" "object-detection"
+  push-model.sh: |-
+    #!/usr/bin/env sh
+    set -e
+    # Create bucket
+    mcli alias set minio ${MINIO_ENDPOINT} ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD}
+    echo "Creating rhods bucket on minio alias ..."
+    mcli mb --ignore-existing minio/rhods
+    echo "Creation completed"
+    # Push to bucket
+    echo "Get and push model to rhods bucket"
+    cd /tmp
+    git clone https://${GIT_USER}:${GIT_TOKEN}@${GIT_URL}
+    # Restore splited model
+    cat /tmp/object-detection/model/model-* > /tmp/model.onnx
+    mcli cp /tmp/model.onnx minio/rhods/model/model.onnx
+    echo "Model pushed into bucket"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: push-model
+  generateName: push-model-
+spec:
+  parallelism: 1    
+  completions: 1    
+  activeDeadlineSeconds: 1800 
+  backoffLimit: 6
+  template:         
+    metadata:
+      name: push-model
+    spec:
+      serviceAccountName: jobs
+      restartPolicy: OnFailure
+      volumes:
+        - name: push-model-scripts
+          configMap:
+            name: push-model-scripts
+            defaultMode: 0777
+      initContainers:
+        - name: wait-minio
+          image: registry.redhat.io/openshift4/ose-cli:v4.11.0-202302061916.p0.g1928ac4.assembly.stream
+          command: ['/scripts/wait-minio.sh']
+          volumeMounts:
+            - name: push-model-scripts
+              mountPath: /scripts
+      containers:
+        - name: push-model
+          image: quay.io/redhat-summit-connect-france-2023/push-model-tools:latest
+          command: ['/scripts/push-model.sh']
+          volumeMounts:
+            - name: push-model-scripts
+              mountPath: /scripts
+          env:
+            - name: GIT_URL
+              value: "github.com/RedHat-Summit-Connect-France-2023/object-detection"
+            - name: GIT_USER
+              value: "adrien-legros"
+            - name: GIT_TOKEN # Read only to object-detection repository, expire 1th February 2024
+              value: "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"
+            - name: MINIO_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: aws-connection-s3-creds
+                  key: AWS_S3_ENDPOINT
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef: 
+                  name: aws-connection-s3-creds
+                  key: AWS_ACCESS_KEY_ID
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef: 
+                  name: aws-connection-s3-creds
+                  key: AWS_SECRET_ACCESS_KEY
