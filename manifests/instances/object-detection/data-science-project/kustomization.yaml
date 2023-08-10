@@ -4,3 +4,5 @@ resources:
   - s3-creds.yaml
   - ds-pipeline-instance.yaml
   - minio-route.yaml
+  - serviceaccount-jobs.yaml
+  - push-model-to-bucket.yaml
