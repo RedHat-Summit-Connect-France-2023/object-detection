@@ -17,7 +17,6 @@ import json
 import pickle
 from PIL import Image
 
-LOG_DIR = "./log"
 FEATURE_EXTRACTOR_DIR = "./feature_extractor"
 MAX_RETURNED_REDICTIONS = 3
 

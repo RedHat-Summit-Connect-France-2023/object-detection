@@ -9,10 +9,12 @@ from dotenv import load_dotenv
 import ast
 load_dotenv()
 
-import pickle
 import uuid
 
 DEBUG = os.getenv('DEBUG', 1)
+DEBUG_LOG_IMAGES = "./log/images/"
+DEBUG_LOG_VARS = "./log/vars/"
+
 IOU_THRESHOLD = float(os.getenv('IOU_THRESHOLD', 0.65))
 CONF_THRESHOLD = float(os.getenv('CONF_THRESHOLD', 0.15))
 
@@ -43,19 +45,6 @@ class Detections(BaseModel):
 
 app = FastAPI()
 
-
-def log_inference(uuid, image, outputs):
-
-    def save_pickle(var, file_name):
-        with open(f'./log/vars/{file_name}.pickle', 'wb') as f:
-            pickle.dump(var, f)
-        return None
-    
-    cv2.imwrite("./log/images/" + str(uuid) + '.jpg', image)
-    outputs_file_name = f"outputs_{str(uuid)}"
-    save_pickle(outputs, outputs_file_name)
-    return None
-
 @app.post("/predictions", response_model=Detections)
 async def predictions(file: UploadFile = File(...)):
     contents = await file.read()
@@ -70,11 +59,16 @@ async def predictions(file: UploadFile = File(...)):
             label=output["class"].capitalize(), score=output["score"]) # Label is the value displayed to user
         result.detections.append(detection)
     if DEBUG:
-        log_inference(request_uuid, img_data, raw_detections)
+        from debug_utility import log_inference, draw_box_and_save
+        log_inference(request_uuid, img_data, raw_detections, img_dir=DEBUG_LOG_IMAGES, var_dir=DEBUG_LOG_VARS)
+        draw_box_and_save(request_uuid, img_data, raw_detections, DEBUG_LOG_IMAGES)
     return result
 
 if __name__ == "__main__":
     import uvicorn
     MODEL_IMAGE_SIZE = (800,600)
     infer=ort_v5(GRPC_HOST, GRPC_PORT, MODEL_NAME, MODEL_IMAGE_SIZE)
+    if DEBUG:
+        os.makedirs(DEBUG_LOG_IMAGES, exist_ok=True)
+        os.makedirs(DEBUG_LOG_VARS, exist_ok=True)
     uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -8,10 +8,7 @@ USER 0
 # Update base image for latest security updates
 # (ubi images are not released that often)
 RUN dnf -y  --setopt=tsflags=nodocs update && \
-    dnf -y clean all --enablerepo='*' && \
-    mkdir -pv log/vars log/images && \
-    chown -R 1001:1001 log && \
-    chmod -R 755 log
+    dnf -y clean all --enablerepo='*'
 
 USER 1001
 
@@ -22,7 +19,7 @@ WORKDIR /opt/app-root/src
 
 # Copy files
 COPY Pipfile.lock api.py grpc_predict_v2_pb2_grpc.py \
-    grpc_predict_v2_pb2.py remote_infer_grpc.py ./
+    grpc_predict_v2_pb2.py remote_infer_grpc.py debug_utility.py ./
 
 COPY config config
 

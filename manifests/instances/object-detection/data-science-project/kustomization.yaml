@@ -6,3 +6,5 @@ resources:
   - minio-route.yaml
   - serviceaccount-jobs.yaml
   - push-model-to-bucket.yaml
+  - servingruntimes.yaml
+  - inferenceservices.yaml
