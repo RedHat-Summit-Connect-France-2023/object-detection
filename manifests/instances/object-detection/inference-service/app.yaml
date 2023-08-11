@@ -22,10 +22,17 @@ spec:
         app: ia-inference
         app.kubernetes.io/component: ia-inference
     spec:
+      volumes:
+        - name: debug-volume
+          persistentVolumeClaim:
+            claimName: debug-volume
       containers:
         - name: ia-inference
           image: >-
-            image-registry.openshift-image-registry.svc:5000/object-detection-app/object-detection@sha256:2437e9a91180ab4d2c448db9f73712f4eb5858524f227d4731cb9feee731e1a6
+            quay.io/redhat-summit-connect-france-2023/inference-service:v1.0
+          volumeMounts:
+            - name: debug-volume
+              mountPath: /opt/app-root/src/log
           env:
             - name: GRPC_HOST
               value: 'modelmesh-serving.object-detection'

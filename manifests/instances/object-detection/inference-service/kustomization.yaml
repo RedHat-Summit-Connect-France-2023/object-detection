@@ -1,4 +1,5 @@
 namespace: object-detection-app
 resources:
   - namespace.yaml
+  - pvc.yaml
   - app.yaml
