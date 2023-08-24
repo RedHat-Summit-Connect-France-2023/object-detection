@@ -2,6 +2,8 @@
 
 ## Deployment
 
+**Modify the S3 secret**. Go to ./manifests/instances/object-detection/inference-service/secret.yaml. **Change** AWS_S3_ENDPOINT. **Change or delete** if you don't use AWS_S3_INTERNAL_ENDPOINT
+
 ```
 oc apply -k ./manifests/operators/
 # Wait ~ 10min for operator to deploy
