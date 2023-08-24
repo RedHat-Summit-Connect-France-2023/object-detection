@@ -1,5 +1,5 @@
 from fastapi import FastAPI, File, UploadFile
-from typing import List
+from typing import List, Union
 from pydantic import BaseModel
 import numpy as np
 import cv2
@@ -7,9 +7,10 @@ from remote_infer_grpc import ort_v5
 import os
 from dotenv import load_dotenv
 import ast
-load_dotenv()
 
 import uuid
+
+load_dotenv()
 
 DEBUG = os.getenv('DEBUG', 1)
 DEBUG_LOG_IMAGES = "./log/images/"
@@ -46,11 +47,14 @@ class Detections(BaseModel):
 app = FastAPI()
 
 @app.post("/predictions", response_model=Detections)
-async def predictions(file: UploadFile = File(...)):
+async def predictions(userId: Union[str, None] = None, file: UploadFile = File(...)):
     contents = await file.read()
     nparr = np.frombuffer(contents, np.uint8)
     img_data = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-    request_uuid = uuid.uuid4()
+    if not userId:
+        userId = "anonymous"
+    safe_uid = "".join([c for c in userId if c.isalpha() or c.isdigit() or c in ["@", "."]]).rstrip()
+    request_uuid = safe_uid + "_" + str(uuid.uuid4())
     raw_detections = infer(img_data, CONF_THRESHOLD, IOU_THRESHOLD, request_uuid)
     result = Detections(detections=[])
     for output in raw_detections:

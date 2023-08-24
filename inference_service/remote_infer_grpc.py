@@ -67,7 +67,7 @@ class ort_v5:
             end_inference_time = time.time()
             inference_time = end_inference_time-start_inference_time
         except grpc.RpcError as e:
-            if e.code() == StatusCode.UNAVAILABLE:
+            if e.code() == grpc.StatusCode.UNAVAILABLE:
                 raise Exception("Failed to connect to gRPC server")
             else:
                 raise Exception(f"Failed to call gRPC server: {e.details()}")
