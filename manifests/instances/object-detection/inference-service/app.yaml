@@ -44,6 +44,9 @@ spec:
               value: '0.4'
             - name: IOU_THRESHOLD
               value: '0.6'
+          envFrom:
+          - secretRef:
+              name: aws-connection-s3-creds
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File

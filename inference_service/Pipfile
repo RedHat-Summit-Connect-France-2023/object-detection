@@ -3,15 +3,8 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
-[[source]]
-url = "https://download.pytorch.org/whl/cpu"
-verify_ssl = true
-name = "pytorch-cpu"
-
-[dev-packages]
-"watchdog[watchmedo]" = "~=2.3.1"
-
 [packages]
+boto3 = "~=1.28.33"
 grpcio = "~=1.51.3"
 grpcio-tools = "~=1.51.3"
 fastapi = "==0.93.0"
@@ -20,8 +13,8 @@ opencv_python_headless = "==4.7.0.72"
 python-dotenv = "==1.0.0"
 python-multipart = "==0.0.6"
 PyYAML = "==6.0"
-torch = {version="==1.13.1", index="pytorch-cpu"}
-torchvision = {version="==0.14.1", index="pytorch-cpu"}
+torch = {file = "https://download.pytorch.org/whl/cpu/torch-1.13.1%2Bcpu-cp39-cp39-linux_x86_64.whl"}
+torchvision = {file = "https://download.pytorch.org/whl/cpu/torchvision-0.14.1%2Bcpu-cp39-cp39-linux_x86_64.whl"}
 uvicorn = "==0.20.0"
 transformers = "==4.31.0"
 

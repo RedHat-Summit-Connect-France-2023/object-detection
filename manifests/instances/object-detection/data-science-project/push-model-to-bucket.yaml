@@ -27,6 +27,8 @@ data:
     mcli alias set minio ${MINIO_ENDPOINT} ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD}
     echo "Creating rhods bucket on minio alias ..."
     mcli mb --ignore-existing minio/rhods
+    mcli mb --ignore-existing minio/images
+    mcli anonymous set download minio/images
     echo "Creation completed"
     # Push to bucket
     echo "Get and push model to rhods bucket"
