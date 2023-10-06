@@ -1,0 +1,3 @@
+dynamic_batching {
+    max_queue_delay_microseconds: 100
+}

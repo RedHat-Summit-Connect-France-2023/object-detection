@@ -25,7 +25,7 @@ spec:
       containers:
         - name: ia-frontend
           image: >-
-            quay.io/rh-aiservices-bu/mad-m6-workshop-intelligent-application:latest
+            quay.io/redhat-summit-connect-france-2023/ia-frontend:v2
           env:
             - name: OBJECT_DETECTION_URL
               value: 'http://ia-inference:8000/predictions'

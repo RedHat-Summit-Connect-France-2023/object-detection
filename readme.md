@@ -16,17 +16,15 @@ Note: Sometimes model fail loading as the bucket is not ready yet. If you a conn
 
 WIP on clusters and names. For now:
 
-- tshirt, chemise
-- manteau
-- pull
-- pantalon, bas
-- chaussures
-- ensemble
-- lunettes
-- cravatte
-- montre
-- foulard
-- redhat
-- sac
-- parapluie
-- accessoire
+- haut à manches courtes
+- haut à manches longues
+- veste à manches courtes
+- veste à manches longues
+- gillet
+- écharpe
+- short
+- pantalon
+- jupe
+- robe à manche courtes
+- robe à manches longues
+- robe

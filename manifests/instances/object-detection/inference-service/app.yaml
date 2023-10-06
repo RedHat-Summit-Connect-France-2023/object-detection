@@ -29,7 +29,7 @@ spec:
       containers:
         - name: ia-inference
           image: >-
-            quay.io/redhat-summit-connect-france-2023/inference-service:v1.0
+            quay.io/redhat-summit-connect-france-2023/inference-service:v2
           volumeMounts:
             - name: debug-volume
               mountPath: /opt/app-root/src/log

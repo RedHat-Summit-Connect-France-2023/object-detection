@@ -1,0 +1,4 @@
+resources:
+  - openshift-pipelines.yaml
+  - openshift-data-science.yaml
+  - rhods-version-approver.yaml

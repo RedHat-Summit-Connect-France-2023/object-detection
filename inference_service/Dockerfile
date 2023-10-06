@@ -18,12 +18,8 @@ RUN pip install -U "micropipenv[toml]"
 WORKDIR /opt/app-root/src
 
 # Copy files
-COPY Pipfile.lock api.py grpc_predict_v2_pb2_grpc.py \
-    grpc_predict_v2_pb2.py remote_infer_grpc.py debug_utility.py ./
-
-COPY config config
-
-COPY feature_extractor feature_extractor
+COPY Pipfile.lock api.py classes.yaml grpc_predict_v2_pb2_grpc.py \
+    grpc_predict_v2_pb2.py remote_infer_grpc.py ./
 
 # Install packages and cleanup
 # (all commands are chained to minimize layer size)
