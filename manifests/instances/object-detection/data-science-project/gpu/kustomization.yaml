@@ -1,0 +1,4 @@
+resources:
+- ../base
+- servingruntimes.yaml
+- inferenceservice.yaml

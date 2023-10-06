@@ -35,7 +35,7 @@ data:
     cd /tmp
     git clone https://${GIT_URL}
     # Restore splited model
-    mcli cp /tmp/object-detection/model/ minio/rhods/
+    mcli cp --recursive /tmp/object-detection/model/ minio/rhods/model/
     echo "Model pushed into bucket"
 ---
 apiVersion: batch/v1

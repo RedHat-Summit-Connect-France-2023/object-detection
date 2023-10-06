@@ -45,7 +45,10 @@ spec:
         image: registry.redhat.io/openshift4/ose-cli:v4.11.0-202302061916.p0.g1928ac4.assembly.stream
         env:
         - name: RHODS_VERSION
-          value: "rhods-operator.1.32.0"
+          valueFrom:
+            configMapKeyRef:
+              name: rhods-demo-version
+              key: RHODS_VERSION
         command: ["/scripts/approve.sh"]
         args: ["$(RHODS_VERSION)"]
         volumeMounts:

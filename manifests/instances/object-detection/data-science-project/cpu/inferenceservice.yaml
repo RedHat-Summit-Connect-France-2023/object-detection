@@ -18,4 +18,4 @@ spec:
       runtime: object-detection
       storage:
         key: aws-connection-s3-creds
-        path: model/model.onnx
+        path: model
